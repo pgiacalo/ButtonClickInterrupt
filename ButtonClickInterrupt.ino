@@ -1,9 +1,17 @@
+/*
+ * This ESP32 code shows how to use Interrupt Service Routines to detect button clicks.
+ * Two buttons are used to pull-down the voltage on GPIO pins 12 and 14.
+ * The code is designed to safely handle switch bouncing. 
+ */
+
 #include <Arduino.h>
 
 #define BUTTON_UP_PIN     12          // GPIO pin (note that GPIO pins 0 thru 33 have pullup resistors)
 #define BUTTON_DOWN_PIN   14          // GPIO pin (note that GPIO pins 0 thru 33 have pullup resistors)
 
 #define DEBUG             true        // Controls serial output messages 
+
+const int debounceDelayMillis = 10;              // time to wait to avoid switch/button bouncing
 
 volatile bool upPressed = false;      // Flag for button press (volatile for changes by interrupt)
 volatile bool downPressed = false;    // Flag for button press (volatile for changes by interrupt)
@@ -46,7 +54,7 @@ void initializeButtons(){
 void checkForButtonPress(){
   if (upPressed) {
     upInterruptTime = millis();
-    if (upInterruptTime - upLastInterruptTime > 10){  //10 milliseconds for button bounce
+    if (upInterruptTime - upLastInterruptTime > debounceDelayMillis){  
       if (digitalRead(BUTTON_UP_PIN) == LOW) {
         counter++;  // Increment the counter
         //enforce circular counting
@@ -68,7 +76,7 @@ void checkForButtonPress(){
 
   if (downPressed) {
     downInterruptTime = millis();
-    if (downInterruptTime - downLastInterruptTime > 10){  //10 milliseconds for button bounce
+    if (downInterruptTime - downLastInterruptTime > debounceDelayMillis){  
       if (digitalRead(BUTTON_DOWN_PIN) == LOW) {
         counter--;  // Decrement the counter
         //enforce circular counting
