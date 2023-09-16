@@ -1,7 +1,7 @@
 /*
- * This ESP32 code shows how to use Interrupt Service Routines to detect button clicks.
+ * This ESP32 code shows how to use Interrupt Service Routines (ISRs) to detect button clicks.
  * Two buttons are used to pull-down the voltage on GPIO pins 12 and 14.
- * The code is designed to safely handle switch bouncing. 
+ * The code is designed to safely handle switch bouncing.
  */
 
 #include <Arduino.h>
@@ -71,6 +71,10 @@ void checkForButtonPress(){
 
       upPressed = false;
 
+      if (DEBUG){
+        Serial.println("Up button released");
+      }
+
     }    
   }
 
@@ -92,6 +96,10 @@ void checkForButtonPress(){
       while (digitalRead(BUTTON_DOWN_PIN) == LOW);  // Wait until the button is released
 
       downPressed = false;
+
+      if (DEBUG){
+        Serial.println("Down button released");
+      }
 
     }    
   }  
